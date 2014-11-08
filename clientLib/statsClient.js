@@ -46,6 +46,9 @@ function statsClient(host) {
 
         var reqOptions = {
             uri: client.host + '/stat/' + collectionName,
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(params),
         };
 
