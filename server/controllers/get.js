@@ -15,14 +15,11 @@ exports.get = function(req, res) {
         }
 
         return collection.find(req.body).toArray(function(err, docs) {
-            console.log(err);
-
             if (err) {
                 printer.error(err);
                 return res.status(500).end();
             }
 
-            console.log(docs);
             return res.status(200).json(docs);
         });
     });
