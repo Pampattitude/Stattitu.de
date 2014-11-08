@@ -102,11 +102,7 @@ var runServer = function() {
     serverApp.use(bodyParser.urlencoded({extended: true}));
     serverApp.use(bodyParser.json());
     
-    var router = express.Router();
-
-    router.post('/stat/:collection', require('./controllers/post.js').post);
-
-    serverApp.use(router);
+    serverApp.use(require('./controllers/_routes').defineRoutes(serverApp, express.Router()));
 
     var port = constants.serverPort;
     serverApp.listen(port);

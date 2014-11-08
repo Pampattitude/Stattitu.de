@@ -11,7 +11,7 @@ exports.post = function(req, res) {
     return mongoose.connection.db.collection(collectionName, function(err, collection) {
         if (err) {
             printer.error(err);
-            return res.sendStatus(500).end();
+            return res.status(500).end();
         }
 
         req.body.created_ = new Date(); // Creation date
@@ -19,10 +19,10 @@ exports.post = function(req, res) {
         return collection.insert(req.body, function(err) {
             if (err) {
                 printer.error(err);
-                return res.sendStatus(500).end();
+                return res.status(500).end();
             }
 
-            return res.sendStatus(200).end();
+            return res.status(200).end();
         });
     });
 };
