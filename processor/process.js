@@ -8,14 +8,22 @@ var printer = require('../lib/printer');
 
 var common = require('./common');
 
-exports.exec = function(baseCollectioName, eventCollection, aggregateCollection, oldEventCollection, collectionConfig, callback) {
+exports.exec = function(baseCollectionName, eventCollection, aggregateCollection, oldEventCollection, collectionConfig, callback) {
     var nothingToDo = false;
     var lastId = null;
 
     return async.series([
         function(serieCallback) {
+            return ensureIndices_(baseCollectionName, eventCollection, aggregateCollection, oldEventCollection, collectionConfig, serieCallback);
+        },
+        function(serieCallback) {
             // Get events up to a certain point, max 10000
             var aggrOptions = [
+                {
+                    $match: {
+                        treated_: false,
+                    },
+                },
                 {
                     $limit: 10000,
                 },
@@ -32,6 +40,7 @@ exports.exec = function(baseCollectioName, eventCollection, aggregateCollection,
                 if (err) return serieCallback(err);
 
                 if (!aggregate[0] || !aggregate[0].lastId) {
+                    printer.info('Nothing to do for events of "' + baseCollectionName + '"');
                     nothingToDo = true;
                     return serieCallback();
                 }
@@ -89,8 +98,6 @@ exports.exec = function(baseCollectioName, eventCollection, aggregateCollection,
                 return eventCollection.aggregate(aggrOptions, function(err, aggregate) {
                     if (err) return dateCallback(err);
 
-                    printer.info(aggregate.length + ' event aggregates to treat');
-
                     return async.eachSeries(aggregate, function(aggr, aggrCallback) {
                         var findOptions = aggr._id;
 
@@ -122,6 +129,35 @@ exports.exec = function(baseCollectioName, eventCollection, aggregateCollection,
 
                 return serieCallback();
             });
+        },
+    ], callback);
+};
+
+var ensureIndices_ = function(baseCollectionName, eventCollection, aggregateCollection, oldEventCollection, collectionConfig, callback) {
+    return async.series([
+        // Indices for treated_ in events
+        function(serieCallback) {
+            return aggregateCollection.ensureIndex({treated_: 1}, serieCallback);
+        },
+        // Indices for fields in aggregation
+        function(serieCallback) {
+            var indices = {};
+            for (var i = 0 ; collectionConfig.fields.length > i ; ++i)
+                indices[collectionConfig.fields[i]] = 1;
+
+            return aggregateCollection.ensureIndex(indices, serieCallback);
+        },
+        // Indices for date in aggregation
+        function(serieCallback) {
+            var indices = {
+                grain: 1,
+                day: 1,
+                week: 1,
+                month: 1,
+                year: 1,
+            };
+
+            return aggregateCollection.ensureIndex(indices, serieCallback);
         },
     ], callback);
 };
