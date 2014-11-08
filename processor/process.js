@@ -141,6 +141,9 @@ var ensureIndices_ = function(baseCollectionName, eventCollection, aggregateColl
         },
         // Indices for fields in aggregation
         function(serieCallback) {
+            if (!collectionConfig.fields.length)
+                return serieCallback(); // No index to ensure
+
             var indices = {};
             for (var i = 0 ; collectionConfig.fields.length > i ; ++i)
                 indices[collectionConfig.fields[i]] = 1;
