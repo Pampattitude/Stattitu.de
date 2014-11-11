@@ -13,4 +13,11 @@ exports.configuration = [
             'page',
         ],
     },
+    {
+        collection: 'uniqueSession',
+        fields: [
+            'referrer',
+            'page',
+        ],
+    },
 ];
