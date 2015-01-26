@@ -12,7 +12,10 @@ exports.configuration = [
         fields: [
             'referrer',
             'page',
-            'userAgent',
+            'browser',
+            'device',
+            'os',
+            'isBot',
         ],
     },
 
@@ -21,6 +24,10 @@ exports.configuration = [
         fields: [
             'referrer',
             'page',
+            'browser',
+            'device',
+            'os',
+            'isBot',
         ],
     },
 ];

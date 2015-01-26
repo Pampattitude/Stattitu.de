@@ -67,6 +67,14 @@ exports.exec = function(baseCollectionName, eventCollection, aggregateCollection
                     dates: {month: {$month: '$created_'}, year: {$year: '$created_'}},
                     grain: 'month',
                 },
+                {
+                    dates: {year: {$year: '$created_'}},
+                    grain: 'year',
+                },
+                {
+                    dates: {},
+                    grain: 'all'
+                }
             ];
 
             return async.eachSeries(dateList, function(date, dateCallback) {
