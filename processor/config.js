@@ -6,13 +6,16 @@ exports.configuration = [
         fields: [
         ],
     },
+
     {
         collection: 'pageView',
         fields: [
             'referrer',
             'page',
+            'userAgent',
         ],
     },
+
     {
         collection: 'uniqueSession',
         fields: [
