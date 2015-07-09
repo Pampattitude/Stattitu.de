@@ -19,6 +19,8 @@ var printer             = require('../lib/printer');
 
 var common              = require('./common');
 
+var spinSleepTime       = 5 * 60 * 1000; //ms, so 5min
+
 var main = function() {
     printer.info('Started application in ' + process.env.NODE_ENV + ' mode');
 
@@ -38,7 +40,7 @@ var main = function() {
                 return process.exit(1);
             }
 
-            return process.exit(0);
+            return setTimeout(function() { return process.exit(0); }, spinSleepTime);
         });
     });
 };

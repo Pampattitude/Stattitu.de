@@ -24,7 +24,7 @@ var main = function() {
     if (cluster.isMaster) {
         global.processId = 'Master';
 
-        var clusterPerCpu   = ('production' === process.env.NODE_ENV ? 4 : 1);
+        var clusterPerCpu   = 1;
         var clusterCount    = parseInt(require('os').cpus().length * clusterPerCpu);
 
         cluster.on('fork', function(worker) {
